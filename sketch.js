@@ -1,7 +1,6 @@
 let car
 let x, y;
 let snap;
-let xoff;
 let roadCanvas;
 let roadWidth;
 let roadHardness;
@@ -40,6 +39,30 @@ function draw() {
     }
 
 }
+
+function initCar() {
+    //initial car+ starting road position
+    xoff = 0
+    x = 0
+    y = noise(xoff) * height
+
+    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
+}
+function initRoad() {
+    roadCanvas = createGraphics(500, 500)
+    roadWidth = 50
+    roadHardness = 0.06
+    roadNoiseSeed = 100;
+
+    if (roadNoiseSeed == 0) {
+        roadNoiseSeed = floor(random(-100000, 100000))
+        noiseSeed(roadNoiseSeed)
+    }
+    else {
+        noiseSeed(roadNoiseSeed)
+    }
+}
 function generateRoad() {
     xoff = 0
     oldY = noise(xoff) * height
@@ -56,28 +79,6 @@ function generateRoad() {
     }
     image(roadCanvas, 0, 0)
 
-}
-function initCar() {
-    //initial car+ starting road position
-    xoff = 0
-    x = 0
-    y = noise(xoff) * height
-
-    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
-}
-function initRoad() {
-    roadCanvas = createGraphics(500, 500)
-    roadWidth = 50
-    roadHardness = 0.06
-    roadNoiseSeed = 0;
-    if (roadNoiseSeed == 0) {
-        roadNoiseSeed = floor(random(-100000, 100000))
-        noiseSeed(roadNoiseSeed)
-    }
-    else {
-        noiseSeed(roadNoiseSeed)
-    }
 }
 function addDisplay() {
     displayedData.alldisplays = createDiv("")
@@ -135,7 +136,10 @@ function addDisplay() {
     displayedData.recordButton = createButton("SEND")
     displayedData.recordButton.parent(displayedData.buttonsArea)
     displayedData.recordButton.mousePressed(() => {
-        AISend(car.recordHistory)
+        neuralNetwork.sendData(car.recordHistory, () => {
+            car.recordHistory = [];
+            console.log("rrr")
+        })
     })
 
     displayedData.recordButton = createButton("CHANGE ROAD")
@@ -190,11 +194,7 @@ function AIHelper(data) {
     decision = neuralNetwork.processing(data)
     return decision
 }
-function AISend(data) {
-    //console.log(data)
-    neuralNetwork.sendData(data)
 
-}
 
 
 

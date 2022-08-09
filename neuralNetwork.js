@@ -22,9 +22,9 @@ class NeuralNetwork {
         firebase.initializeApp(firebaseConfig);
         this.database = firebase.database();
     }
-    sendData(data) {
+    sendData(data, callback) {
         let detectorsDatabase = this.database.ref("carDataSet");
-        console.log(data)
+        
         let decision = detectorsDatabase.push(data, finished);
         console.log("FireBase : " + decision.key);
         function finished(err) {
@@ -32,6 +32,7 @@ class NeuralNetwork {
             console.error(err);
           } else {
             console.log("Data saved");
+            callback();
           }
         }
     }

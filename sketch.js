@@ -25,9 +25,13 @@ function setup() {
     roadNoiseSeed=0;
     
 
-    if(roadNoiseSeed!=0){
+    if(roadNoiseSeed==0){
+        roadNoiseSeed=floor(random(-100000,100000))
         noiseSeed(roadNoiseSeed)
     } 
+    else{
+        noiseSeed(roadNoiseSeed)
+    }
     
     
 

@@ -1,0 +1,103 @@
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/molleindustria/p5.play/lib/p5.play.js"></script>
+
+<script>
+    let inputFileName = 'dataSet003.json';
+    let saveModelParam = false;
+    let maxValue = 150;
+    let data;
+    let model;
+    let xs, ys;
+
+    let labelList = [
+        "left",
+        "right",
+        "straight"
+    ];
+
+    function setup() {
+        data = loadJSON(inputFileName, cleanData);
+    }
+
+    function cleanData() {
+        let inputData = []
+        let outputData = []
+        for (const [key, value] of Object.entries(data.carDataSet)) {
+            for (let i = 0; i < value.length; i++) {
+                inputData.push([value[i].cap1 / maxValue, value[i].cap2 / maxValue, value[i].cap3 / maxValue, value[i].cap4 / maxValue, value[i].cap5 / maxValue])
+                outputData.push(labelList.indexOf(value[i].label))
+            }
+        }
+        // sub DataSet
+        //inputData = inputData.slice(0, 100);
+        //outputData = outputData.slice(0, 100);
+
+        xs = tf.tensor2d(inputData);
+        let labelTensor = tf.tensor1d(outputData, "int32");
+        ys = tf.oneHot(labelTensor, 3);
+
+        labelTensor.dispose();
+
+        model = tf.sequential();
+
+        // Hidden Layer (units = hidden neurals | activation)
+        let hidden = tf.layers.dense({
+            units: 10,
+            activation: "sigmoid",
+            inputDim: 5,
+        });
+        // output Layer (units = NB output | activation)
+        let output = tf.layers.dense({
+            units: 3,
+            activation: "softmax",
+        });
+        model.add(hidden);
+        model.add(output);
+        const lr = 0.2;
+        // Optimizer
+        const optimizer = tf.train.sgd(lr);
+
+        // Loss Function
+        model.compile({
+            optimizer: optimizer,
+            loss: "categoricalCrossentropy",
+        });
+
+        train().then((res) => {
+            console.log(res.history.loss);
+        });
+    }
+    async function train() {
+        const options = {
+            epochs: 10,
+            validationSplit: 0.1,
+            shuffle: true,
+            callbacks: {
+                onTrainBegin: () => console.log("Train start"),
+                onTrainEnd: () => {
+                    console.log("Train end");
+                    if (saveModelParam)
+                        saveModel().then((result) => {
+                            console.log('Model saved.');
+                            console.log(result);
+                        });
+                },
+                onBatchEnd: tf.nextFrame,
+                onEpochEnd: (num, logs) => {
+                    console.log("Epoch " + num + " loss " + logs.loss);
+                },
+            },
+        };
+        return await model.fit(xs, ys, options);
+    }
+
+    async function saveModel() {
+        return await model.save("downloads://carDetection");
+    }
+
+    function draw() {
+        noLoop()
+    }
+</script>

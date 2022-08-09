@@ -47,7 +47,7 @@ function initCar() {
     y = noise(xoff) * height
 
     //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper, ()=>{initCar(); car.recordHistory = [];})
 }
 function initRoad() {
     roadCanvas = createGraphics(500, 500)

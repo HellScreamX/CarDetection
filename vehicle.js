@@ -1,5 +1,5 @@
 class Vehicle {
-    constructor(x, y, velocity, staticRotation, moveSpeed, AICallBack) {
+    constructor(x, y, velocity, staticRotation, moveSpeed, aiCallBack, crashCallback) {
         this.rotations = []
         this.rotations["left"] = staticRotation * 1;
         this.rotations["right"] = staticRotation * (-1);
@@ -18,7 +18,9 @@ class Vehicle {
         this.recordHistory =[]
         this.isRecording = false;
         this.AIGuided =false;
-        this.AICallBack=AICallBack;
+        this.aiCallBack=aiCallBack;
+        this.crashCallback=crashCallback;
+        this.crashed=0;
 
     }
     update(myCanvas) {
@@ -36,9 +38,11 @@ class Vehicle {
                 let myY = floor(cos(this.captors[index] + this.velocity) * i + this.y);
                 if (myCanvas.pixels[(myX + myY * width) * 4 + 1] == 0) {
                     break;
-                }
-                else {
-                }
+                }              
+                
+            }
+            if(i==0){
+                this.crashCallback();
             }
             this.detections[index] = i;
             if(this.isRecording){
@@ -53,7 +57,7 @@ class Vehicle {
             }
 
             if(this.AIGuided){
-                let output = this.AICallBack(this.detections)
+                let output = this.aiCallBack(this.detections)
                 this.rotate(output)
             }
         }

@@ -7,7 +7,7 @@ let roadWidth;
 let displayedData = {}
 let neuralNetwork
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(500, 500);
     pixelDensity(1)
 
     //initial car+ starting road position
@@ -16,7 +16,7 @@ function setup() {
     y = noise(xoff) * height
 
     //road init
-    roadCanvas = createGraphics(600, 600)
+    roadCanvas = createGraphics(500, 500)
     roadWidth = 50
 
     //car init(x, y, velocity, staticRotation, moveSpeed)
@@ -53,33 +53,51 @@ function generateRoad() {
 
 }
 function addDispaly() {
+    displayedData.alldisplays = createDiv("")
+    displayedData.alldisplays.addClass('float-container');
+
+    displayedData.statsArea = createDiv("")
+    displayedData.statsArea.addClass('float-child');
+    displayedData.statsArea.parent(displayedData.alldisplays)
+
+    displayedData.buttonsArea = createDiv("")
+    displayedData.buttonsArea.addClass('float-child');
+    displayedData.buttonsArea.parent(displayedData.alldisplays)
+
+
     displayedData.rotation = createP('');
+    displayedData.rotation.parent(displayedData.statsArea)
     displayedData.captors = []
     for (let index = 0; index < car.captors.length; index++) {
         displayedData.captors[index] = createP('');
+        displayedData.captors[index].parent(displayedData.statsArea)
     }
     displayedData.historyRecordsCount = createP('')
+    displayedData.historyRecordsCount.parent(displayedData.statsArea)
+
 
     displayedData.recordButton = createButton("REC")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
     displayedData.recordButton.mousePressed(() => {
         car.isRecording = true;
     })
 
     displayedData.recordButton = createButton("STOP")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
     displayedData.recordButton.mousePressed(()=>{
         car.isRecording=false;
     })
 
     displayedData.recordButton = createButton("RESET")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
     displayedData.recordButton.mousePressed(()=>{
         car.recordHistory=[];
     })
     displayedData.recordButton = createButton("SEND")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
     displayedData.recordButton.mousePressed(()=>{
         AISend(car.recordHistory)
     })
-
-
 }
 function updateDispaly() {
     displayedData.rotation.html("rotation: " + car.rotationLabel);
@@ -113,7 +131,7 @@ function AIHelper(data){
 }
 function AISend(data){
     //console.log(data)
-    neuralNetwork.send(data)
+    neuralNetwork.sendData(data)
     
 }
 

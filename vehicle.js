@@ -43,12 +43,12 @@ class Vehicle {
             this.detections[index] = i;
             if(this.isRecording){
                 this.recordHistory.push({
-                    rotation:this.rotationLabel,
-                    captor1:this.detections[0],
-                    captor2:this.detections[1],
-                    captor3:this.detections[2],
-                    captor4:this.detections[3],
-                    captor5:this.detections[4],
+                    label:this.rotationLabel,
+                    cap1:this.detections[0],
+                    cap2:this.detections[1],
+                    cap3:this.detections[2],
+                    cap4:this.detections[3],
+                    cap5:this.detections[4],
                 })
             }
 

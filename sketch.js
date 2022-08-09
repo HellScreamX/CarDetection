@@ -47,7 +47,7 @@ function initCar() {
     y = noise(xoff) * height
 
     //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper, ()=>{initCar(); car.recordHistory = [];})
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper, () => { initCar(); car.recordHistory = []; })
 }
 function initRoad() {
     roadCanvas = createGraphics(500, 500)
@@ -188,6 +188,17 @@ function keyPressed() {
     else if (keyCode == ENTER) {
         car.isRecording = !car.isRecording;
     }
+    else if (keyCode == 83) {
+
+        neuralNetwork.sendData(car.recordHistory, () => {
+            car.recordHistory = [];
+        })
+    }
+    else if (keyCode == 70) {
+        car.moveSpeed = 0;
+        console.log(car.recordHistory[car.recordHistory.length-1]);
+    }
+
 }
 function AIHelper(data) {
     //console.log(data)

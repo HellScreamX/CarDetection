@@ -5,7 +5,7 @@ class Vehicle {
         this.rotations["right"] = staticRotation * (-1);
         this.rotations["straight"] = staticRotation * 0;
         this.rotationLabel = "straight"
-        this.captorRange = 50
+        this.captorRange = 150
         this.x = x;
         this.y = y;
         this.velocity = velocity;
@@ -16,7 +16,7 @@ class Vehicle {
         this.staticRotation = staticRotation
         this.dangerRange = 30;
         this.recordHistory =[]
-        this.isRecording = false;
+        this.isRecording = true;
         this.AIGuided =false;
         this.aiCallBack=aiCallBack;
         this.crashCallback=crashCallback;

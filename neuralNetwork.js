@@ -39,7 +39,4 @@ class NeuralNetwork {
     processing(data) {
         return "left"
     }
-    send(data) {
-
-    }
 }

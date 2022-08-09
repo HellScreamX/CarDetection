@@ -13,7 +13,7 @@ let started = false;
 function setup() {
     displayedData = {}
     displayedData.mainCanvas = createCanvas(500, 500);
-    displayedData.mainCanvas.addClass('float-child');
+    displayedData.mainCanvas.addClass('flex-child');
 
     pixelDensity(1)
     
@@ -81,7 +81,7 @@ function initRoad(){
 }
 function addDisplay() {
     displayedData.alldisplays = createDiv("")
-    displayedData.alldisplays.addClass('float-container');
+    displayedData.alldisplays.addClass('flex-container');
 
     displayedData.mainCanvas.parent(displayedData.alldisplays)
 
@@ -89,7 +89,7 @@ function addDisplay() {
     //displayedData.buttonsArea.parent(displayedData.alldisplays)
 
     displayedData.statsArea = createDiv("")
-    displayedData.statsArea.addClass('float-child');
+    displayedData.statsArea.addClass('flex-child');
     displayedData.statsArea.parent(displayedData.alldisplays)
 
     displayedData.rotation = createP('');

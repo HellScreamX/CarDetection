@@ -7,14 +7,15 @@ body {
 canvas {
     display: block;
 }
-.float-container {
-    border: 3px solid #fff;
-    padding: 20px;
+.flex-container {
+    display: flex;
 }
 
-.float-child {
-    width: 30%;
-    float: left;
-    padding: 20px;
-    border: 2px solid red;
+.flex-child {
+    flex: 1;
+    border: 2px solid yellow;
 }  
+
+.flex-child:first-child {
+    margin-right: 20px;
+} 

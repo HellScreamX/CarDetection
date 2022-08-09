@@ -9,7 +9,23 @@ let displayedData;
 let neuralNetwork
 let started = false;
 
+async function loadModelFromLocal() {
+    const jsonUpload = document.getElementById('json-upload');
+    const weightsUpload = document.getElementById('weights-upload');
+    return await tf.loadLayersModel(tf.io.browserFiles([jsonUpload.files[0], weightsUpload.files[0]]));
+}
+
 function setup() {
+    let loadButton = createButton("Load Model")
+    loadButton.mousePressed(() => {
+        loadModelFromLocal().then(result => {
+            console.log(result);
+            model = result;
+            car.AIGuided = true;
+            console.log('Start Auto Pilote ^^')
+        })
+    })
+
     displayedData = {}
     displayedData.mainCanvas = createCanvas(500, 500);
     displayedData.mainCanvas.addClass('flex-child');
@@ -28,6 +44,7 @@ function setup() {
     neuralNetwork = new NeuralNetwork()
 
 }
+
 function draw() {
     background(0, 0, 0)
     generateRoad()
@@ -47,8 +64,12 @@ function initCar() {
     y = noise(xoff) * height
 
     //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper, () => { initCar(); car.recordHistory = []; })
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.2, AIHelper, () => {
+        initCar();
+        car.recordHistory = [];
+    })
 }
+
 function initRoad() {
     roadCanvas = createGraphics(500, 500)
     roadWidth = 50
@@ -58,11 +79,11 @@ function initRoad() {
     if (roadNoiseSeed == 0) {
         roadNoiseSeed = floor(random(-100000, 100000))
         noiseSeed(roadNoiseSeed)
-    }
-    else {
+    } else {
         noiseSeed(roadNoiseSeed)
     }
 }
+
 function generateRoad() {
     xoff = 0
     oldY = noise(xoff) * height
@@ -80,6 +101,7 @@ function generateRoad() {
     image(roadCanvas, 0, 0)
 
 }
+
 function addDisplay() {
     displayedData.alldisplays = createDiv("")
     displayedData.alldisplays.addClass('flex-container');
@@ -153,6 +175,7 @@ function addDisplay() {
         initCar()
     })
 }
+
 function updateDisplay() {
     displayedData.rotation.html("rotation: " + car.rotationLabel);
     for (let index = 0; index < car.captors.length; index++) {
@@ -161,10 +184,12 @@ function updateDisplay() {
     displayedData.historyRecordsCount.html('records count: ' + car.recordHistory.length)
     displayedData.currentNoiseSeed.html('current road number: ' + roadNoiseSeed)
 }
+
 function mousePressed() {
     //detection()
 
 }
+
 function keyPressed() {
     if (keyCode == LEFT_ARROW) {
         car.rotate("left")
@@ -172,40 +197,35 @@ function keyPressed() {
     } else if (keyCode == RIGHT_ARROW) {
         car.rotate("right")
 
-    }
-    else if (keyCode == UP_ARROW) {
+    } else if (keyCode == UP_ARROW) {
         car.rotate("straight")
-    }
-    else if (keyCode == 32) {
+    } else if (keyCode == 32) {
         started = true
-    }
-    else if (keyCode == BACKSPACE) {
+    } else if (keyCode == BACKSPACE) {
         initCar();
-    }
-    else if (keyCode == DELETE) {
+    } else if (keyCode == DELETE) {
         car.recordHistory = [];
-    }
-    else if (keyCode == ENTER) {
+    } else if (keyCode == ENTER) {
         car.isRecording = !car.isRecording;
-    }
-    else if (keyCode == 83) {
+    } else if (keyCode == 83) {
 
         neuralNetwork.sendData(car.recordHistory, () => {
             car.recordHistory = [];
         })
-    }
-    else if (keyCode == 70) {
+    } else if (keyCode == 70) {
         car.moveSpeed = 0;
-        console.log(car.recordHistory[car.recordHistory.length-1]);
+        car.recordHistory[car.recordHistory.length - 1].cap1 = car.recordHistory[car.recordHistory.length - 1].cap1 / 150
+        car.recordHistory[car.recordHistory.length - 1].cap2 = car.recordHistory[car.recordHistory.length - 1].cap2 / 150
+        car.recordHistory[car.recordHistory.length - 1].cap3 = car.recordHistory[car.recordHistory.length - 1].cap3 / 150
+        car.recordHistory[car.recordHistory.length - 1].cap4 = car.recordHistory[car.recordHistory.length - 1].cap4 / 150
+        car.recordHistory[car.recordHistory.length - 1].cap5 = car.recordHistory[car.recordHistory.length - 1].cap5 / 150
+
+        console.log(car.recordHistory[car.recordHistory.length - 1]);
     }
 
 }
+
 function AIHelper(data) {
-    //console.log(data)
     decision = neuralNetwork.processing(data)
     return decision
 }
-
-
-
-

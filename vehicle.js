@@ -15,12 +15,12 @@ class Vehicle {
         this.detections = []
         this.staticRotation = staticRotation
         this.dangerRange = 30;
-        this.recordHistory =[]
+        this.recordHistory = []
         this.isRecording = true;
-        this.AIGuided =false;
-        this.aiCallBack=aiCallBack;
-        this.crashCallback=crashCallback;
-        this.crashed=0;
+        this.AIGuided = false;
+        this.aiCallBack = aiCallBack;
+        this.crashCallback = crashCallback;
+        this.crashed = 0;
 
     }
     update(myCanvas) {
@@ -38,38 +38,38 @@ class Vehicle {
                 let myY = floor(cos(this.captors[index] + this.velocity) * i + this.y);
                 if (myCanvas.pixels[(myX + myY * width) * 4 + 1] == 0) {
                     break;
-                }              
-                
+                }
+
             }
-            if(i==0){
+            if (i == 0) {
                 this.crashCallback();
             }
             this.detections[index] = i;
-            if(this.isRecording){
+            if (this.isRecording) {
                 this.recordHistory.push({
-                    label:this.rotationLabel,
-                    cap1:this.detections[0],
-                    cap2:this.detections[1],
-                    cap3:this.detections[2],
-                    cap4:this.detections[3],
-                    cap5:this.detections[4],
+                    label: this.rotationLabel,
+                    cap1: this.detections[0],
+                    cap2: this.detections[1],
+                    cap3: this.detections[2],
+                    cap4: this.detections[3],
+                    cap5: this.detections[4],
                 })
             }
 
-            if(this.AIGuided){
+            if (this.AIGuided) {
                 let output = this.aiCallBack(this.detections)
                 this.rotate(output)
             }
         }
-        
+
     }
-    record(isRecording){
-        if(isRecording) this.isRecording=true;
-        else this.isRecording=false
+    record(isRecording) {
+        if (isRecording) this.isRecording = true;
+        else this.isRecording = false
     }
     draw(myCanvas) {
         rectMode(CENTER)
-        //canvas.clear()
+            //canvas.clear()
         fill(255, 0, 0)
         translate(this.x, this.y);
         rotate(-this.velocity)
@@ -81,8 +81,19 @@ class Vehicle {
         stroke(255, 0, 0, 255)
         myCanvas.loadPixels();
         for (let index = 0; index < this.captors.length; index++) {
+            if (index == 0)
+                stroke(0, 0, 255) //blue
+            if (index == 1)
+                stroke(0, 255, 255) //cyon
+            if (index == 2)
+                stroke(0, 255, 0) //green
+            if (index == 3)
+                stroke(255, 255, 0) // jeune
+            if (index == 4)
+                stroke(255, 0, 0) //red
+
             const element = this.captors[index];
-            
+
             if (this.detections[index] < this.dangerRange) {
 
                 strokeWeight(2)

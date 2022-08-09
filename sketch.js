@@ -16,11 +16,11 @@ function setup() {
     displayedData.mainCanvas.addClass('flex-child');
 
     pixelDensity(1)
-    
+
     //road init
     initRoad()
 
-
+    //car init 
     initCar()
 
     //data display init
@@ -57,16 +57,16 @@ function generateRoad() {
     image(roadCanvas, 0, 0)
 
 }
-function initCar(){
+function initCar() {
     //initial car+ starting road position
     xoff = 0
     x = 0
     y = noise(xoff) * height
-    
+
     //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
     car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
 }
-function initRoad(){
+function initRoad() {
     roadCanvas = createGraphics(500, 500)
     roadWidth = 50
     roadHardness = 0.06
@@ -86,7 +86,6 @@ function addDisplay() {
     displayedData.mainCanvas.parent(displayedData.alldisplays)
 
     displayedData.buttonsArea = createDiv("")
-    //displayedData.buttonsArea.parent(displayedData.alldisplays)
 
     displayedData.statsArea = createDiv("")
     displayedData.statsArea.addClass('flex-child');
@@ -102,6 +101,8 @@ function addDisplay() {
     displayedData.historyRecordsCount = createP('')
     displayedData.historyRecordsCount.parent(displayedData.statsArea)
 
+    displayedData.currentNoiseSeed = createP('')
+    displayedData.currentNoiseSeed.parent(displayedData.statsArea)
 
     displayedData.recordButton = createButton("START")
     displayedData.recordButton.parent(displayedData.buttonsArea)
@@ -136,6 +137,17 @@ function addDisplay() {
     displayedData.recordButton.mousePressed(() => {
         AISend(car.recordHistory)
     })
+
+    displayedData.recordButton = createButton("CHANGE ROAD")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
+    displayedData.recordButton.mousePressed(() => {
+        started = false;
+        //road init
+        initRoad()
+
+        //car init 
+        initCar()
+    })
 }
 function updateDisplay() {
     displayedData.rotation.html("rotation: " + car.rotationLabel);
@@ -143,6 +155,7 @@ function updateDisplay() {
         displayedData.captors[index].html("captor " + (index + 1) + ": " + car.detections[index]);
     }
     displayedData.historyRecordsCount.html('records count: ' + car.recordHistory.length)
+    displayedData.currentNoiseSeed.html('current road number: ' + roadNoiseSeed)
 }
 function mousePressed() {
     //detection()

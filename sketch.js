@@ -8,6 +8,7 @@ let roadHardness;
 let displayedData = {}
 let neuralNetwork
 let started = false;
+let roadNoiseSeed;
 function setup() {
     createCanvas(500, 500);
     pixelDensity(1)
@@ -21,6 +22,14 @@ function setup() {
     roadCanvas = createGraphics(500, 500)
     roadWidth = 50
     roadHardness = 0.06
+    roadNoiseSeed=0;
+    
+
+    if(roadNoiseSeed!=0){
+        noiseSeed(roadNoiseSeed)
+    } 
+    
+    
 
     //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
     car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)

@@ -56,14 +56,13 @@ function addDispaly() {
     displayedData.alldisplays = createDiv("")
     displayedData.alldisplays.addClass('float-container');
 
-    displayedData.statsArea = createDiv("")
-    displayedData.statsArea.addClass('float-child');
-    displayedData.statsArea.parent(displayedData.alldisplays)
-
     displayedData.buttonsArea = createDiv("")
     displayedData.buttonsArea.addClass('float-child');
     displayedData.buttonsArea.parent(displayedData.alldisplays)
 
+    displayedData.statsArea = createDiv("")
+    displayedData.statsArea.addClass('float-child');
+    displayedData.statsArea.parent(displayedData.alldisplays)
 
     displayedData.rotation = createP('');
     displayedData.rotation.parent(displayedData.statsArea)

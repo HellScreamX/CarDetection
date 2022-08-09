@@ -53,7 +53,7 @@ function initRoad() {
     roadCanvas = createGraphics(500, 500)
     roadWidth = 50
     roadHardness = 0.06
-    roadNoiseSeed = 100;
+    roadNoiseSeed = 0;
 
     if (roadNoiseSeed == 0) {
         roadNoiseSeed = floor(random(-100000, 100000))

@@ -7,7 +7,7 @@ let roadWidth;
 let displayedData = {}
 let neuralNetwork
 function setup() {
-    createCanvas(800, 800);
+    createCanvas(600, 600);
     pixelDensity(1)
 
     //initial car+ starting road position
@@ -16,7 +16,7 @@ function setup() {
     y = noise(xoff) * height
 
     //road init
-    roadCanvas = createGraphics(800, 800)
+    roadCanvas = createGraphics(600, 600)
     roadWidth = 50
 
     //car init(x, y, velocity, staticRotation, moveSpeed)
@@ -82,7 +82,7 @@ function addDispaly() {
 
 }
 function updateDispaly() {
-    displayedData.rotation.html("rotation: " + car.rotations.indexOf(car.rotation));
+    displayedData.rotation.html("rotation: " + car.rotationLabel);
     for (let index = 0; index < car.captors.length; index++) {
         displayedData.captors[index].html("captor " + (index + 1) + ": " + car.detections[index]);
     }

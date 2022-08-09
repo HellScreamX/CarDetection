@@ -5,41 +5,26 @@ let xoff;
 let roadCanvas;
 let roadWidth;
 let roadHardness;
-let displayedData = {}
+let roadNoiseSeed;
+let displayedData;
 let neuralNetwork
 let started = false;
-let roadNoiseSeed;
+
 function setup() {
-    createCanvas(500, 500);
+    displayedData = {}
+    displayedData.mainCanvas = createCanvas(500, 500);
+    displayedData.mainCanvas.addClass('float-child');
+
     pixelDensity(1)
-
-    //initial car+ starting road position
-    xoff = 0
-    x = 0
-    y = noise(xoff) * height
-
+    
     //road init
-    roadCanvas = createGraphics(500, 500)
-    roadWidth = 50
-    roadHardness = 0.06
-    roadNoiseSeed=0;
-    
+    initRoad()
 
-    if(roadNoiseSeed==0){
-        roadNoiseSeed=floor(random(-100000,100000))
-        noiseSeed(roadNoiseSeed)
-    } 
-    else{
-        noiseSeed(roadNoiseSeed)
-    }
-    
-    
 
-    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
+    initCar()
 
     //data display init
-    addDispaly();
+    addDisplay();
 
     neuralNetwork = new NeuralNetwork()
 
@@ -48,10 +33,10 @@ function draw() {
     background(0, 0, 0)
     generateRoad()
     if (started) {
-       
+
         car.update(roadCanvas)
         car.draw(roadCanvas)
-        updateDispaly()
+        updateDisplay()
     }
 
 }
@@ -72,13 +57,36 @@ function generateRoad() {
     image(roadCanvas, 0, 0)
 
 }
-function addDispaly() {
+function initCar(){
+    //initial car+ starting road position
+    xoff = 0
+    x = 0
+    y = noise(xoff) * height
+    
+    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.5, AIHelper)
+}
+function initRoad(){
+    roadCanvas = createGraphics(500, 500)
+    roadWidth = 50
+    roadHardness = 0.06
+    roadNoiseSeed = 0;
+    if (roadNoiseSeed == 0) {
+        roadNoiseSeed = floor(random(-100000, 100000))
+        noiseSeed(roadNoiseSeed)
+    }
+    else {
+        noiseSeed(roadNoiseSeed)
+    }
+}
+function addDisplay() {
     displayedData.alldisplays = createDiv("")
     displayedData.alldisplays.addClass('float-container');
 
+    displayedData.mainCanvas.parent(displayedData.alldisplays)
+
     displayedData.buttonsArea = createDiv("")
-    displayedData.buttonsArea.addClass('float-child');
-    displayedData.buttonsArea.parent(displayedData.alldisplays)
+    //displayedData.buttonsArea.parent(displayedData.alldisplays)
 
     displayedData.statsArea = createDiv("")
     displayedData.statsArea.addClass('float-child');
@@ -94,6 +102,17 @@ function addDispaly() {
     displayedData.historyRecordsCount = createP('')
     displayedData.historyRecordsCount.parent(displayedData.statsArea)
 
+
+    displayedData.recordButton = createButton("START")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
+    displayedData.recordButton.mousePressed(() => {
+        started = true;
+    })
+    displayedData.recordButton = createButton("RESTART")
+    displayedData.recordButton.parent(displayedData.buttonsArea)
+    displayedData.recordButton.mousePressed(() => {
+        initCar();
+    })
 
     displayedData.recordButton = createButton("REC")
     displayedData.recordButton.parent(displayedData.buttonsArea)
@@ -118,7 +137,7 @@ function addDispaly() {
         AISend(car.recordHistory)
     })
 }
-function updateDispaly() {
+function updateDisplay() {
     displayedData.rotation.html("rotation: " + car.rotationLabel);
     for (let index = 0; index < car.captors.length; index++) {
         displayedData.captors[index].html("captor " + (index + 1) + ": " + car.detections[index]);
@@ -141,14 +160,21 @@ function keyPressed() {
         car.rotate("straight")
     }
     else if (keyCode == 32) {
-        started=true
+        started = true
+    }
+    else if (keyCode == BACKSPACE) {
+        initCar();
+    }
+    else if (keyCode == DELETE) {
+        car.recordHistory = [];
+    }
+    else if (keyCode == ENTER) {
+        car.isRecording = !car.isRecording;
     }
 }
 function AIHelper(data) {
     //console.log(data)
     decision = neuralNetwork.processing(data)
-
-
     return decision
 }
 function AISend(data) {

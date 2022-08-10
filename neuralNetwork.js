@@ -53,7 +53,7 @@ class NeuralNetwork {
             ]);
             let result = model.predict(xs);
             let index = result.argMax(1).dataSync()[0];
-            console.log('==> ' + labelList[index])
+            //console.log('==> ' + labelList[index])
             return labelList[index]
         }
     }

@@ -17,7 +17,7 @@ class Vehicle {
         this.dangerRange = 30;
         this.recordHistory = []
         this.isRecording = true;
-        this.AIGuided = false;
+        this.AIGuided = true;
         this.aiCallBack = aiCallBack;
         this.crashCallback = crashCallback;
         this.crashed = 0;
@@ -45,21 +45,23 @@ class Vehicle {
                 this.crashCallback();
             }
             this.detections[index] = i;
-            if (this.isRecording) {
-                this.recordHistory.push({
-                    label: this.rotationLabel,
-                    cap1: this.detections[0],
-                    cap2: this.detections[1],
-                    cap3: this.detections[2],
-                    cap4: this.detections[3],
-                    cap5: this.detections[4],
-                })
-            }
+
 
             if (this.AIGuided) {
                 let output = this.aiCallBack(this.detections)
                 this.rotate(output)
             }
+        }
+        
+        if (this.isRecording) {
+            this.recordHistory.push({
+                label: this.rotationLabel,
+                cap1: this.detections[0],
+                cap2: this.detections[1],
+                cap3: this.detections[2],
+                cap4: this.detections[3],
+                cap5: this.detections[4],
+            })
         }
 
     }
@@ -69,7 +71,7 @@ class Vehicle {
     }
     draw(myCanvas) {
         rectMode(CENTER)
-            //canvas.clear()
+        //canvas.clear()
         fill(255, 0, 0)
         translate(this.x, this.y);
         rotate(-this.velocity)

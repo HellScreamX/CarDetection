@@ -1,3 +1,4 @@
+
 let car
 let x, y;
 let snap;
@@ -8,6 +9,9 @@ let roadNoiseSeed;
 let displayedData;
 let neuralNetwork
 let started = false;
+let canvasWidth = 400;
+let canvasHeight = 400;
+let IAActivationLabel;
 
 async function loadModelFromLocal() {
     const jsonUpload = document.getElementById('json-upload');
@@ -27,7 +31,7 @@ function setup() {
     })
 
     displayedData = {}
-    displayedData.mainCanvas = createCanvas(500, 500);
+    displayedData.mainCanvas = createCanvas(canvasWidth, canvasHeight);
     displayedData.mainCanvas.addClass('flex-child');
 
     pixelDensity(1)
@@ -42,7 +46,8 @@ function setup() {
     addDisplay();
 
     neuralNetwork = new NeuralNetwork()
-
+    background(0, 0, 0)
+    car.draw(roadCanvas)
 }
 
 function draw() {
@@ -50,8 +55,9 @@ function draw() {
     generateRoad()
     if (started) {
 
-        car.update(roadCanvas)
+        
         car.draw(roadCanvas)
+        car.update(roadCanvas)
         updateDisplay()
     }
 
@@ -63,17 +69,17 @@ function initCar() {
     x = 0
     y = noise(xoff) * height
 
-    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack)
-    car = new Vehicle(x, y, PI / 2, 0.01, 0.2, AIHelper, () => {
+    //car init(x, y, velocity, staticRotation, moveSpeed, AICallBack, crashCallback)
+    car = new Vehicle(x, y, PI / 2, 0.01, 0.4, AIHelper, () => {
         initCar();
         car.recordHistory = [];
     })
 }
 
 function initRoad() {
-    roadCanvas = createGraphics(500, 500)
-    roadWidth = 50
-    roadHardness = 0.06
+    roadCanvas = createGraphics(canvasWidth, canvasHeight)
+    roadWidth = 40
+    roadHardness = 0.03
     roadNoiseSeed = 0;
 
     if (roadNoiseSeed == 0) {
@@ -163,6 +169,12 @@ function addDisplay() {
             console.log("rrr")
         })
     })
+    IAActivationLabel = car.AIGuided ? "ON" : "OFF"
+    displayedData.aiActivationButton = createButton(IAActivationLabel)
+    displayedData.aiActivationButton.parent(displayedData.buttonsArea)
+    displayedData.aiActivationButton.mousePressed(() => {
+        car.AIGuided = !car.AIGuided;
+    })
 
     displayedData.recordButton = createButton("CHANGE ROAD")
     displayedData.recordButton.parent(displayedData.buttonsArea)
@@ -177,6 +189,7 @@ function addDisplay() {
 }
 
 function updateDisplay() {
+    displayedData.aiActivationButton.html = IAActivationLabel;
     displayedData.rotation.html("rotation: " + car.rotationLabel);
     for (let index = 0; index < car.captors.length; index++) {
         displayedData.captors[index].html("captor " + (index + 1) + ": " + car.detections[index]);
